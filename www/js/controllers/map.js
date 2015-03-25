@@ -304,24 +304,9 @@ angular.module('app')
 
   var layerSwitcherControl = new ol.control.LayerSwitcher();
   var zoomControl = new ol.control.Zoom();
-
-
-
-  // add the feature layer to the map first
-  map.addLayer(featureLayer);
-
-  // add draw layer
-  map.addLayer(drawLayer);
-
-  // layer switcher
-  map.addControl(layerSwitcherControl);
-
-  // Popup
   var popup = new ol.Overlay.Popup();
-  map.addOverlay(popup);
 
-  // Zoom
-  // map.addControl(zoomControl);
+
 
 
 
@@ -346,6 +331,41 @@ angular.module('app')
   // Watch whether we have internet access or not
   // This will eventually have to be read directly from phone
   $scope.$watch('airplaneMode', function(airplaneMode) {
+
+
+
+      // add the feature layer to the map first
+      map.removeLayer(featureLayer);
+
+      // add draw layer
+      map.removeLayer(drawLayer);
+
+      // layer switcher
+      map.removeControl(layerSwitcherControl);
+
+      // Popup
+      map.removeOverlay(popup);
+
+      // Zoom
+      // map.addControl(zoomControl);
+
+
+
+
+      // add the feature layer to the map first
+      map.addLayer(featureLayer);
+
+      // add draw layer
+      map.addLayer(drawLayer);
+
+      // layer switcher
+      map.addControl(layerSwitcherControl);
+
+      // Popup
+      map.addOverlay(popup);
+
+      // Zoom
+      // map.addControl(zoomControl);
 
     if (airplaneMode === true) {
       console.log("Offline");
