@@ -302,6 +302,10 @@ angular.module('app')
     })
   });
 
+  var layerSwitcherControl = new ol.control.LayerSwitcher();
+  var zoomControl = new ol.control.Zoom();
+
+
 
   // add the feature layer to the map first
   map.addLayer(featureLayer);
@@ -310,14 +314,16 @@ angular.module('app')
   map.addLayer(drawLayer);
 
   // layer switcher
-  map.addControl(new ol.control.LayerSwitcher());
+  map.addControl(layerSwitcherControl);
 
   // Popup
   var popup = new ol.Overlay.Popup();
   map.addOverlay(popup);
 
   // Zoom
-  map.addControl(new ol.control.Zoom());
+  // map.addControl(zoomControl);
+
+
 
   /////////////////
   // END MAP LAYERS
