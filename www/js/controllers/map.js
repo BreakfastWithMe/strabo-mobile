@@ -858,6 +858,63 @@ angular.module('app')
           featureLayer.getLayers().push(geojsonToVectorLayer(spotTypeLayer));
         }
       }
+
+      // create a cluster source
+      var features = [];
+      _.each(spots, function (spot) {
+        // is the spot a point geometry?  Clusters only works with point geometries
+        if (spot.geometry.type === 'Point') {
+          var feature = (new ol.format.GeoJSON()).readFeatures(spot, {
+            featureProjection: 'EPSG:3857'
+          });
+        }
+
+        features.push(feature[0]);
+      });
+
+      var clusterSource = new ol.source.Cluster({
+        distance: 40, // in pixels
+        source: new ol.source.Vector({
+          features: features
+        })
+      });
+
+      var styleCache = {};
+      var clusters = new ol.layer.Vector({
+        source: clusterSource,
+        style: function(feature, resolution) {
+          var size = feature.get('features').length;
+          console.log("size", size);
+          var style = styleCache[size];
+          if (!style) {
+            style = [new ol.style.Style({
+              image: new ol.style.Circle({
+                radius: 10,
+                stroke: new ol.style.Stroke({
+                  color: '#fff'
+                }),
+                fill: new ol.style.Fill({
+                  color: '#3399CC'
+                })
+              }),
+              text: new ol.style.Text({
+                text: size.toString(),
+                fill: new ol.style.Fill({
+                  color: '#fff'
+                })
+              })
+            })];
+            styleCache[size] = style;
+          }
+          return style;
+        }
+      });
+
+
+      map.addLayer(clusters);
+
+
+
     });
 
     map.on('touchstart', function(event) {
