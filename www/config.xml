@@ -49,6 +49,9 @@
   <gap:plugin name="com.hiddentao.cordova.filepath" version="1.0.0" source="npm"/>
   <gap:plugin name="cordova-plugin-whitelist" version="1.0.0" source="npm"/>
 
+  <!-- testing whitelist -->
+  <allow-navigation href="*" />
+
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
