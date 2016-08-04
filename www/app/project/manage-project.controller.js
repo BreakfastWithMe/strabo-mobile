@@ -343,14 +343,14 @@
       };
       _.each(spotIds, function (spotId) {
         var spot = SpotFactory.getSpotById(spotId);
-        if (!spot) ProjectFactory.removeSpotFromDataset(spotId);
-        else {
+       // if (!spot) ProjectFactory.removeSpotFromDataset(spotId);
+       // else {
           var spotNoImages = angular.fromJson(angular.toJson(spot));  // Deep clone
           _.each(spotNoImages.properties.images, function (image, i) {
             spotNoImages.properties.images[i] = _.omit(image, 'src');
           });
           spotCollection.features.push(spotNoImages);
-        }
+       // }
       });
 
 
@@ -760,12 +760,12 @@
 
     function getNumberOfSpots(dataset) {
       var spots = ProjectFactory.getSpotIds()[dataset.id];
-      if (!allValidSpots(spots)) getNumberOfSpots(dataset);
-      else {
+      //if (!allValidSpots(spots)) getNumberOfSpots(dataset);
+      //else {
         if (_.isEmpty(spots)) return '(0 Spots)';
         else if (spots.length === 1) return '(1 Spot)';
         return '(' + spots.length + ' Spots)';
-      }
+     // }
     }
 
     function isDatasetOn(dataset) {
