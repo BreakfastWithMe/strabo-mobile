@@ -1,0 +1,34 @@
+<ion-view title='Styles'>
+  <ion-nav-buttons side='left'>
+    <button ng-click='vm.setStyles()'
+            class='button button-icon icon ion-arrow-left-c'></button>
+  </ion-nav-buttons>
+  <ion-content class='has-header'>
+    <label class="item item-input item-select">
+      <div class="input-label">Top</div>
+      <select ng-model='vm.optionSelected'>
+        <!--ng-options='choice.properties.id as choice.properties.name for choice in vmChild.relatedRosettaChoices'>-->
+        <option ng-repeat='option in vm.options' value='{{option}}'>{{ option }}</option>
+      </select>
+    </label>
+    <div ng-show='vm.optionSelected === "Tag"'>
+      <label class="item item-input item-select">
+        <div class="input-label">Tag Name</div>
+        <select ng-model='vm.tagSelected'>
+          <option ng-repeat='tag in vm.tags' value='{{tag.type}}'>{{ tag.type }}</option>
+        </select>
+      </label>
+      <div ng-show='vm.tagSelected'>
+        <button ng-click='vm.selectColor()'>Select Color</button>
+      </div>
+    </div>
+    <div ng-show='vm.styles'>
+      <ion-list>
+        <ion-item class='item-text-wrap item-button-right'
+                  ng-repeat='style in vm.styles'>
+          <span class='color-box' style='background:{{ style.color }}'></span> {{ style.type }} {{ style.tag }}
+        </ion-item>
+      </ion-list>
+    </div>
+  </ion-content>
+</ion-view>

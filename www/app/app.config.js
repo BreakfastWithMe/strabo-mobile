@@ -139,6 +139,16 @@
           }
         }
       })
+      .state('app.styles', {
+        'cache': false,
+        'url': '/preferences/styles',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/project/styles.html',
+            'controller': 'PreferencesController as vm'
+          }
+        }
+      })
       .state('app.preferences', {
         'cache': false,
         'url': '/preferences',

@@ -7,6 +7,17 @@
               class='button button-icon icon ion-arrow-left-c'></button>
     </ion-nav-buttons>
     <ion-content class='has-header'>
+      <ion-list>
+        <ion-item href='#/app/preferences/styles'>
+          Styles
+        </ion-item>
+        <ion-item class='item-text-wrap' ng-click='vm.goToSpot(spot.properties.id)'>
+          Tab Control
+        </ion-item>
+        <ion-item class='item-text-wrap' ng-click='vm.goToSpot(spot.properties.id)'>
+          Etc
+        </ion-item>
+      </ion-list>
       <auto-fields/>
     </ion-content>
   </ion-view>
