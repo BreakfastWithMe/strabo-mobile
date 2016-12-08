@@ -5,11 +5,13 @@
     .module('app')
     .controller('ImagesTabController', ImagesTabController);
 
-  ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
-    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory'];
+  ImagesTabController.$inject = ['$cordovaCamera', '$cordovaDeviceMotion', '$cordovaDeviceOrientation',
+    '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope', '$state', '$window',
+    'DataModelsFactory', 'HelpersFactory', 'ImageFactory'];
 
-  function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
-                               $scope, $state, $window, DataModelsFactory, HelpersFactory, ImageFactory) {
+  function ImagesTabController($cordovaCamera, $cordovaDeviceMotion, $cordovaDeviceOrientation, $cordovaGeolocation,
+                               $document, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $window,
+                               DataModelsFactory, HelpersFactory, ImageFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('image').survey;
@@ -68,6 +70,54 @@
         $log.log('Error getting the current position. Ignoring geolocation.');
         vmParent.spot.properties.images.push(imageData);
       });
+    }
+
+    function calculateCameraOrientation() {
+      var deferred = $q.defer(); // init promise
+
+      if (navigator.accelerometer) {
+        $cordovaDeviceMotion.getCurrentAcceleration().then(function (accelerationResult) {
+            var x = accelerationResult.x;
+            var y = accelerationResult.y;
+            var z = accelerationResult.z;
+            $cordovaDeviceOrientation.getCurrentHeading().then(function (headingResult) {
+              var magneticHeading = headingResult.magneticHeading;
+              if (magneticHeading !== null && x !== null && y !== null && z !== null) {
+                var g = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+                var diry = magneticHeading;
+
+                // Look Direction
+                var ldir;
+                if ((Math.abs(y) / x) < 0.5 && x > 0) ldir = diry + 90;
+                else if ((Math.abs(y) / x) < 0.5 && x < 0) ldir = diry - 90;
+                else if ((Math.abs(y) / x) < 0.5 && y > 0) ldir = diry;
+                else ldir = diry + 190;
+                ldir = HelpersFactory.mod(ldir, 360);
+
+                // Look Angle (alpha)
+                var alpha = -(z / Math.abs(z)) * Math.asin(Math.abs(z) / g);
+
+                deferred.resolve({'view_azimuth_trend': ldir, 'view_angle_plunge': alpha});
+              }
+              else {
+                $log.log('Error:', 'magneticHeading =', magneticHeading, 'x =', x, 'y =', y, 'z =', z);
+                deferred.resolve();
+              }
+            }, function (err) {
+              $log.log('Compass Error:', err);
+              deferred.resolve();
+            });
+          },
+          function (err) {
+            $log.log('Acceleration Error:', err);
+            deferred.resolve();
+          });
+      }
+      else {
+        $log.log('No Acceleratormeter on Device');
+        deferred.resolve();
+      }
+      return deferred.promise;
     }
 
     function cameraModal() {
@@ -269,20 +319,23 @@
             'width': image.width,
             'id': HelpersFactory.getNewId()
           };
-          ImageFactory.saveImage(imageData.id, image.src);
-          imageSources[imageData.id] = image.src;
-          if (getGeoInfo) addGeoInfo(imageData);
-          else {
-            var confirmPopup = $ionicPopup.confirm({
-              'title': 'Get Geolocation?',
-              'template': 'Use current latitude and longitude for this image?',
-              'cancelText': 'No'
-            });
-            confirmPopup.then(function (res) {
-              if (res) addGeoInfo(imageData);
-              else vmParent.spot.properties.images.push(imageData);
-            });
-          }
+          calculateCameraOrientation().then(function (orientationCalculations) {
+            if (orientationCalculations && getGeoInfo) _.extend(imageData, orientationCalculations);
+            ImageFactory.saveImage(imageData.id, image.src);
+            imageSources[imageData.id] = image.src;
+            if (getGeoInfo) addGeoInfo(imageData);
+            else {
+              var confirmPopup = $ionicPopup.confirm({
+                'title': 'Get Geolocation?',
+                'template': 'Use current latitude and longitude for this image?',
+                'cancelText': 'No'
+              });
+              confirmPopup.then(function (res) {
+                if (res) addGeoInfo(imageData);
+                else vmParent.spot.properties.images.push(imageData);
+              });
+            }
+          });
         };
         image.onerror = function () {
           $ionicPopup.alert({
