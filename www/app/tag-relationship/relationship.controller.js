@@ -6,10 +6,11 @@
     .controller('RelationshipController', RelationshipController);
 
   RelationshipController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope',
-    '$state', 'HelpersFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory'];
+    '$state', 'HelpersFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
 
   function RelationshipController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state,
-                                  HelpersFactory, ProjectFactory, SpotFactory, TagFactory) {
+                                  HelpersFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+    var vmParent = $scope.vm;
     var vm = this;
 
     var order = 'a';
@@ -68,7 +69,7 @@
       setRelationshipTypes();
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
-      if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
+      if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
     }
 
     function createModals() {
@@ -239,6 +240,7 @@
         }
         else {
           ProjectFactory.saveRelationship(vm.data).then(function () {
+            if (IS_WEB) vmParent.updateRelationships();
             $location.path(path);
           });
         }

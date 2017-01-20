@@ -14,7 +14,7 @@
     <div ng-class='{"online": vm.isOnline(), "offline": !vm.isOnline()}'></div>
   </ion-nav-buttons>
   <ion-pane data-tap-disabled='true'>
-    <div id='mapdiv' style='height:100%'></div>
+    <div id='mapdiv'></div>
     <div class='saveEdits' ng-show='vm.showSaveEditsBtn' ng-click='vm.saveEdits()'>{{ vm.saveEditsText }}</div>
     <div id='zoomInfo'>Zoom: {{ vm.currentZoom }}</div>
   </ion-pane>

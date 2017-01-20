@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="format-detection" content="telephone=no">
+    <title>StraboSpot Web</title>
+
+    <!-----------------------------------------------------------------
+     WEB APP ONLY LIBRARIES
+    ------------------------------------------------------------------->
+    <!-- jQuery -->
+    <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
+    <!-- Golden Layout -->
+    <script type="text/javascript" src="lib/goldenlayout/goldenlayout.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="lib/goldenlayout/goldenlayout-base.css"/>
+    <link type="text/css" rel="stylesheet" href="lib/goldenlayout/goldenlayout-light-theme.css"/>
+    <!-- Bootstrap -->
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-----------------------------------------------------------------
+    SHARED LIBRARIES
+    ------------------------------------------------------------------->
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <!-- underscore -->
+    <script src="lib/underscore.js"></script>
+    <!-- ngMessages -->
+    <script src="lib/angular-messages.js"></script>
+    <!-- papa parse (csv to json) -->
+    <script src="lib/papaparse.min.js"></script>
+    <!-- turf -->
+    <script src="lib/turf/turf.min.js"></script>
+    <!-- jsts -->
+    <script src="lib/jsts/jsts.min.js"></script>
+    <!-- Base64 Encoding -->
+    <script src="lib/base64.js"></script>
+    <!-- openlayers 3 -->
+    <link rel="stylesheet" href="lib/ol3/ol.css">
+    <script src="lib/ol3/ol-debug.js"></script>
+    <!-- openlayers 3 popup (https://github.com/walkermatt/ol3-popup) -->
+    <link rel="stylesheet" href="lib/ol3/ol3-popup.css">
+    <script src="lib/ol3/ol3-popup.js"></script>
+    <!-- openlayers 3 layerswitcher -->
+    <link rel="stylesheet" href="lib/ol3/ol3-layerswitcher.css">
+    <script src="lib/ol3/ol3-layerswitcher.js"></script>
+    <!-- local storage with localForage and SQLite Driver -->
+    <script src="lib/localforage/dist/localforage.js"></script>
+    <script src="lib/localforage-cordovasqlitedriver/src/localforage-cordovasqlitedriver.js"></script>
+
+    <!-----------------------------------------------------------------
+    NOT USED FOR WEB BUT NEEDED TO HIDE MISSING ERRORS
+    ------------------------------------------------------------------->
+    <!-- ngCordova -->
+    <script src="lib/ng-cordova.js"></script>
+
+    <!-----------------------------------------------------------------
+    STRABO FILES
+    ------------------------------------------------------------------->
+    <!-- stylesheets -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.web.css" rel="stylesheet">
+
+    <!-- application bootstrap  -->
+    <script src="app/app.web.module.js"></script>
+    <script src="app/app.web.config.js"></script>
+
+    <!-- ng controllers -->
+    <script src="app/about/about.controller.js"></script>
+    <script src="app/debug/debug.controller.js"></script>
+    <script src="app/map/archive-tiles.controller.js"></script>
+    <script src="app/map/image-basemap.controller.js"></script>
+    <script src="app/map/image-basemaps.controller.js"></script>
+    <script src="app/map/map.controller.js"></script>
+    <script src="app/map/offline-map.controller.js"></script>
+    <script src="app/map/other-maps.controller.js"></script>
+    <script src="app/menu/menu.controller.js"></script>
+    <script src="app/project/description.controller.js"></script>
+    <script src="app/project/manage-project.controller.js"></script>
+    <script src="app/project/preferences.controller.js"></script>
+    <script src="app/project/tools.controller.js"></script>
+    <script src="app/spot/spot.controller.js"></script>
+    <script src="app/spot/spots.controller.js"></script>
+    <script src="app/tag-relationship/relationship.controller.js"></script>
+    <script src="app/tag-relationship/relationships.controller.js"></script>
+    <script src="app/tag-relationship/tag.controller.js"></script>
+    <script src="app/tag-relationship/tags.controller.js"></script>
+    <script src="app/user/login.controller.js"></script>
+    <script src="app/user/user.controller.js"></script>
+
+    <!-- ng spot tab controllers -->
+    <script src="app/spot/3dstructures-tab.controller.js"></script>
+    <script src="app/spot/images-tab.controller.js"></script>
+    <script src="app/spot/inferences-tab.controller.js"></script>
+    <script src="app/spot/nest-tab.controller.js"></script>
+    <script src="app/spot/orientation-data-tab.controller.js"></script>
+    <script src="app/spot/other-features-tab.controller.js"></script>
+    <script src="app/spot/samples-tab.controller.js"></script>
+    <script src="app/spot/spot-tab.controller.js"></script>
+    <script src="app/spot/tags-tab.controller.js"></script>
+
+    <!-- ng factories -->
+    <script src="app/data-models/data-models.factory.js"></script>
+    <script src="app/form/form.factory.js"></script>
+    <script src="app/map/coordinate-range.factory.js"></script>
+    <script src="app/map/map.factory.js"></script>
+    <script src="app/map/map-draw.factory.js"></script>
+    <script src="app/map/map-features.factory.js"></script>
+    <script src="app/map/map-layer.factory.js"></script>
+    <script src="app/map/map-setup.factory.js"></script>
+    <script src="app/map/map-view.factory.js"></script>
+    <script src="app/map/offline-tile.factory.js"></script>
+    <script src="app/map/other-maps.factory.js"></script>
+    <script src="app/map/slippy-tile-names.factory.js"></script>
+    <script src="app/map/symbology.factory.js"></script>
+    <script src="app/project/project.factory.js"></script>
+    <script src="app/remote-connection/remote-server.factory.js"></script>
+    <script src="app/shared/helpers.factory.js"></script>
+    <script src="app/shared/livedb.factory.js"></script>
+    <script src="app/shared/localstorage.factory.js"></script>
+    <script src="app/spot/image.factory.js"></script>
+    <script src="app/spot/spot.factory.js"></script>
+    <script src="app/spot/spots.factory.js"></script>
+    <script src="app/tag-relationship/tag.factory.js"></script>
+    <script src="app/user/user.factory.js"></script>
+
+    <!-- ng filters -->
+    <script src="app/map/normalize-bytes.filter.js"></script>
+
+    <!-- ng directives -->
+    <script src="app/form/auto-fields.directive.js"></script>
+    <script src="app/tag-relationship/concept.directive.js"></script>
+    <script src="app/tag-relationship/documentation.directive.js"></script>
+    <script src="app/tag-relationship/geologic-unit.directive.js"></script>
+    <script src="app/tag-relationship/list.directive.js"></script>
+    <script src="app/tag-relationship/other.directive.js"></script>
+    <script src="app/tag-relationship/tags-filter.directive.js"></script>
+    <script src="app/tag-relationship/tags-list-properties.directive.js"></script>
+
+    <!-- new ng directives -->
+    <script src="app/about/about.directive.js"></script>
+    <script src="app/debug/misc.directive.js"></script>
+    <script src="app/map/image-basemaps.directive.js"></script>
+    <script src="app/map/other-maps.directive.js"></script>
+    <script src="app/project/description.directive.js"></script>
+    <script src="app/project/manage-project.directive.js"></script>
+    <script src="app/project/preferences.directive.js"></script>
+    <script src="app/project/tools.directive.js"></script>
+    <script src="app/spot/3dstructures-tab.directive.js"></script>
+    <script src="app/spot/images-tab.directive.js"></script>
+    <script src="app/spot/inferences-tab.directive.js"></script>
+    <script src="app/spot/nest-tab.directive.js"></script>
+    <script src="app/spot/orientation-data-tab.directive.js"></script>
+    <script src="app/spot/other-features-tab.directive.js"></script>
+    <script src="app/spot/samples-tab.directive.js"></script>
+    <script src="app/spot/spot-tab.directive.js"></script>
+    <script src="app/spot/spot-tabs.directive.js"></script>
+    <script src="app/spot/spots.directive.js"></script>
+    <script src="app/spot/tags-tab.directive.js"></script>
+    <script src="app/tag-relationship/relationship.directive.js"></script>
+    <script src="app/tag-relationship/relationships.directive.js"></script>
+    <script src="app/tag-relationship/tag.directive.js"></script>
+    <script src="app/tag-relationship/tags.directive.js"></script>
+    <script src="app/user/user.directive.js"></script>
+
+    <!-- golden layout test -->
+    <script src="app/dashboard/dashboard.module.js"></script>
+    <script src="app/dashboard/dashboard.controller.js"></script>
+    <script src="app/dashboard/user.controller.js"></script>
+    <script src="app/dashboard/user-details.controller.js"></script>
+
+  </head>
+  <body ng-app="app">
+    <ui-view></ui-view>
+  </body>
+</html>

@@ -5,17 +5,20 @@
     .module('app')
     .controller('ImageBasemapsController', ImageBasemapsController);
 
-  ImageBasemapsController.$inject = ['$location', '$log', 'SpotFactory'];
+  ImageBasemapsController.$inject = ['$location', '$log', '$state', 'SpotFactory'];
 
-  function ImageBasemapsController($location, $log, SpotFactory) {
+  function ImageBasemapsController($location, $log, $state, SpotFactory) {
     var vm = this;
 
-    vm.goToImageBasemap = goToImageBasemap;
+    vm.imageBasemapIdSelected = undefined;
     vm.imageBasemaps = [];
+
+    vm.goToImageBasemap = goToImageBasemap;
 
     activate();
 
     function activate() {
+      if ($state.params && $state.params.imagebasemapId) vm.imageBasemapIdSelected = $state.params.imagebasemapId;
       getImageBasemaps();
     }
 
@@ -37,6 +40,7 @@
      */
 
     function goToImageBasemap(imageBasemap) {
+      vm.imageBasemapIdSelected = imageBasemap.id;
       $location.path('/app/image-basemaps/' + imageBasemap.id);
     }
   }

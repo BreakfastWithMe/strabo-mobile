@@ -5,19 +5,23 @@
     .module('app')
     .controller('RelationshipsController', RelationshipsController);
 
-  RelationshipsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', 'HelpersFactory', 'LiveDBFactory',
-    'ProjectFactory'];
+  RelationshipsController.$inject = ['$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state',
+    'HelpersFactory', 'LiveDBFactory', 'ProjectFactory'];
 
-  function RelationshipsController($ionicPopover, $ionicPopup, $location, $log, $scope, HelpersFactory, LiveDBFactory, ProjectFactory) {
+  function RelationshipsController($ionicPopover, $ionicPopup, $location, $log, $scope, $state, HelpersFactory,
+                                   LiveDBFactory, ProjectFactory) {
     var vm = this;
 
     var isDelete = false;
+
+    vm.relationships = [];
+    vm.relationshipIdSelected = undefined;
 
     vm.deleteAllRelationships = deleteAllRelationships;
     vm.deleteRelationship = deleteRelationship;
     vm.goToRelationship = goToRelationship;
     vm.newRelationship = newRelationship;
-    vm.relationships = [];
+    vm.updateRelationships = updateRelationships;
 
     activate();
 
@@ -26,6 +30,8 @@
      */
 
     function activate() {
+      if ($state.params && $state.params.relationship_id) vm.relationshipIdSelected = $state.params.relationship_id;
+
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
         $log.log('Save project to LiveDB.', ProjectFactory.getCurrentProject());
@@ -86,12 +92,18 @@
     }
 
     function goToRelationship(id) {
+      vm.relationshipIdSelected = id;
       if (!isDelete) $location.path('/app/relationships/' + id);
     }
 
     function newRelationship() {
       var id = HelpersFactory.getNewId();
+      vm.relationshipIdSelected = id;
       $location.path('/app/relationships/' + id);
+    }
+
+    function updateRelationships() {
+      vm.relationships = ProjectFactory.getRelationships();
     }
   }
 }());

@@ -6,10 +6,12 @@
     .controller('ImagesTabController', ImagesTabController);
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
-    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'ProjectFactory', 'SpotFactory'];
+    '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory',
+    'ProjectFactory'];
 
   function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
-                               $scope, $state, $window, DataModelsFactory, HelpersFactory, ImageFactory, LiveDBFactory, ProjectFactory, SpotFactory) {
+                               $scope, $state, $window, DataModelsFactory, HelpersFactory, ImageFactory, LiveDBFactory,
+                               ProjectFactory) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('image').survey;

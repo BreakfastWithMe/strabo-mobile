@@ -3,60 +3,51 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <meta name="format-detection" content="telephone=no">
-    <title>Strabo Mobile</title>
+    <title>StraboSpot Mobile</title>
 
-    <!-- underscore -->
-    <script src="lib/underscore.js"></script>
-
+    <!-----------------------------------------------------------------
+    SHARED LIBRARIES
+    ------------------------------------------------------------------->
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
-
-    <!-- ngCordova -->
-    <script src="lib/ng-cordova.js"></script>
-
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <!-- underscore -->
+    <script src="lib/underscore.js"></script>
     <!-- ngMessages -->
     <script src="lib/angular-messages.js"></script>
-
-    <!-- Papa Parse (csv to json) -->
+    <!-- papa parse (csv to json) -->
     <script src="lib/papaparse.min.js"></script>
-
     <!-- turf -->
     <script src="lib/turf/turf.min.js"></script>
-
     <!-- jsts -->
     <script src="lib/jsts/jsts.min.js"></script>
-
     <!-- Base64 Encoding -->
     <script src="lib/base64.js"></script>
-
     <!-- openlayers 3 -->
     <link rel="stylesheet" href="lib/ol3/ol.css">
     <script src="lib/ol3/ol-debug.js"></script>
-
     <!-- openlayers 3 popup (https://github.com/walkermatt/ol3-popup) -->
     <link rel="stylesheet" href="lib/ol3/ol3-popup.css">
     <script src="lib/ol3/ol3-popup.js"></script>
-
     <!-- openlayers 3 layerswitcher -->
     <link rel="stylesheet" href="lib/ol3/ol3-layerswitcher.css">
     <script src="lib/ol3/ol3-layerswitcher.js"></script>
-
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
-
     <!-- local storage with localForage and SQLite Driver -->
     <script src="lib/localforage/dist/localforage.js"></script>
     <script src="lib/localforage-cordovasqlitedriver/src/localforage-cordovasqlitedriver.js"></script>
 
+    <!-----------------------------------------------------------------
+    MOBILE APP ONLY (this will be a 404 during development)
+    ------------------------------------------------------------------->
+    <script src="lib/ng-cordova.js"></script>
+
+    <!-----------------------------------------------------------------
+    STRABO FILES
+    ------------------------------------------------------------------->
     <!-- Stylesheets -->
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
-    -->
-
-    <!-- your app's js -->
+    <!-- application bootstrap -->
     <script src="app/app.module.js"></script>
     <script src="app/app.run.js"></script>
     <script src="app/app.config.js"></script>
@@ -132,6 +123,32 @@
     <script src="app/tag-relationship/other.directive.js"></script>
     <script src="app/tag-relationship/tags-filter.directive.js"></script>
     <script src="app/tag-relationship/tags-list-properties.directive.js"></script>
+
+    <!-- new ng directives -->
+    <script src="app/about/about.directive.js"></script>
+    <script src="app/debug/misc.directive.js"></script>
+    <script src="app/map/image-basemaps.directive.js"></script>
+    <script src="app/map/other-maps.directive.js"></script>
+    <script src="app/project/description.directive.js"></script>
+    <script src="app/project/manage-project.directive.js"></script>
+    <script src="app/project/preferences.directive.js"></script>
+    <script src="app/project/tools.directive.js"></script>
+    <script src="app/spot/3dstructures-tab.directive.js"></script>
+    <script src="app/spot/images-tab.directive.js"></script>
+    <script src="app/spot/inferences-tab.directive.js"></script>
+    <script src="app/spot/nest-tab.directive.js"></script>
+    <script src="app/spot/orientation-data-tab.directive.js"></script>
+    <script src="app/spot/other-features-tab.directive.js"></script>
+    <script src="app/spot/samples-tab.directive.js"></script>
+    <script src="app/spot/spot-tab.directive.js"></script>
+    <script src="app/spot/spot-tabs.directive.js"></script>
+    <script src="app/spot/spots.directive.js"></script>
+    <script src="app/spot/tags-tab.directive.js"></script>
+    <script src="app/tag-relationship/relationship.directive.js"></script>
+    <script src="app/tag-relationship/relationships.directive.js"></script>
+    <script src="app/tag-relationship/tag.directive.js"></script>
+    <script src="app/tag-relationship/tags.directive.js"></script>
+    <script src="app/user/user.directive.js"></script>
 
   </head>
   <body ng-app="app">

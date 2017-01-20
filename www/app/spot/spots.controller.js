@@ -6,28 +6,32 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicHistory', '$ionicLoading', '$ionicModal',
-    '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$window', 'HelpersFactory', 'ProjectFactory',
-    'SpotFactory', 'SpotsFactory', 'UserFactory'];
+    '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state', '$window', 'HelpersFactory', 'ProjectFactory',
+    'SpotFactory', 'SpotsFactory', 'UserFactory', 'IS_WEB'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover,
-                 $ionicPopup, $location, $log, $scope, $window, HelpersFactory, ProjectFactory, SpotFactory,
-                 SpotsFactory, UserFactory) {
+                 $ionicPopup, $location, $log, $scope, $state, $window, HelpersFactory, ProjectFactory, SpotFactory,
+                 SpotsFactory, UserFactory, IS_WEB) {
     var vm = this;
-
     var visibleDatasets = [];
 
     vm.activeDatasets = [];
+    vm.deleteSelected = false;
+    vm.filterModal = {};
+    vm.filterOn = false;
+    vm.showDetail = SpotsFactory.getSpotsListDetail();
+    vm.spots = [];
+    vm.spotsDisplayed = [];
+    vm.spotIdSelected = undefined;
+
     vm.checkedDataset = checkedDataset;
     vm.closeDetailModal = closeDetailModal;
     vm.closeModal = closeModal;
     vm.deleteAllActiveSpots = deleteAllActiveSpots;
-    vm.deleteSelected = false;
     vm.deleteSpot = deleteSpot;
     vm.exportToCSV = exportToCSV;
     vm.getTagNames = getTagNames;
     vm.filter = filter;
-    vm.filterModal = {};
-    vm.filterOn = false;
     vm.goToSpot = goToSpot;
     vm.hasTags = hasTags;
     vm.isDatasetChecked = isDatasetChecked;
@@ -37,11 +41,9 @@
     vm.newSpot = newSpot;
     vm.resetFilters = resetFilters;
     vm.setListDetail = setListDetail;
-    vm.showDetail = SpotsFactory.getSpotsListDetail();
-    vm.spots = [];
-    vm.spotsDisplayed = [];
+    vm.updateSpots = updateSpots;
 
-    HelpersFactory.setBackView($ionicHistory.currentView().url);
+    if (!IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
     activate();
 
     /**
@@ -49,6 +51,8 @@
      */
 
     function activate() {
+      if ($state.params && $state.params.spotId) vm.spotIdSelected = $state.params.spotId;
+
       SpotFactory.clearCurrentSpot();           // Make sure the current spot is empty
       visibleDatasets = SpotFactory.getVisibleDatasets();
       setVisibleSpots();
@@ -361,6 +365,7 @@
     }
 
     function goToSpot(id) {
+      vm.spotIdSelected = id;
       if (!vm.deleteSelected) {
         $location.path('/app/spotTab/' + id + '/spot');
       }
@@ -393,6 +398,8 @@
     // Create a new Spot
     function newSpot() {
       SpotFactory.setNewSpot({}).then(function (id) {
+        vm.spotIdSelected = id;
+        setVisibleSpots();
         $location.path('/app/spotTab/' + id + '/spot');
       });
     }
@@ -406,6 +413,10 @@
     function setListDetail() {
       vm.popover.hide();
       vm.detailModal.show();
+    }
+
+    function updateSpots() {
+      setVisibleSpots();
     }
   }
 }());

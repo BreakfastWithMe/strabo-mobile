@@ -6,10 +6,11 @@
     .controller('TagController', TagController);
 
   TagController.$inject = ['$ionicHistory', '$ionicModal', '$ionicPopup', '$location', '$log', '$scope', '$state',
-    'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory'];
+    'DataModelsFactory', 'HelpersFactory', 'FormFactory', 'ProjectFactory', 'SpotFactory', 'TagFactory', 'IS_WEB'];
 
   function TagController($ionicHistory, $ionicModal, $ionicPopup, $location, $log, $scope, $state, DataModelsFactory,
-                         HelpersFactory, FormFactory, ProjectFactory, SpotFactory, TagFactory) {
+                         HelpersFactory, FormFactory, ProjectFactory, SpotFactory, TagFactory, IS_WEB) {
+    var vmParent = $scope.vm;
     var vm = this;
 
     var isDelete = false;
@@ -73,8 +74,8 @@
       createModals();
 
       vm.currentSpot = SpotFactory.getCurrentSpot();
-      if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
-      else {
+      if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
+      else if (vm.currentSpot) {
         // If we're adding a new tag from within a spot
         if (!vm.data.spots) vm.data.spots = [];
         if (!_.contains(vm.data.spots, vm.currentSpot.properties.id)) vm.data.spots.push(vm.currentSpot.properties.id);
@@ -255,6 +256,7 @@
             TagFactory.setAddNewActiveTag(false);
           }
           ProjectFactory.saveTag(vm.data).then(function () {
+            if (IS_WEB) vmParent.updateTags();
             $location.path(path);
           });
         }

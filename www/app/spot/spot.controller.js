@@ -7,12 +7,13 @@
 
   SpotController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup', '$location',
     '$log', '$scope', '$state', 'FormFactory', 'HelpersFactory', 'MapViewFactory', 'ProjectFactory', 'SpotFactory',
-    'TagFactory'];
+    'TagFactory', 'IS_WEB'];
 
   // This scope is the parent scope for the SpotController that all child SpotController will inherit
   function SpotController($document, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope,
                           $state, FormFactory, HelpersFactory, MapViewFactory, ProjectFactory, SpotFactory,
-                          TagFactory) {
+                          TagFactory, IS_WEB) {
+    var vmParent = $scope.vm;
     var vm = this;
 
     // Tags Variables
@@ -400,6 +401,7 @@
       if (vm.validateForm()) {
         $log.log('Spot to save: ', vm.spot);
         SpotFactory.save(vm.spot).then(function (spots) {
+          if (IS_WEB) vmParent.updateSpots();
           $log.log('Saved spot: ', vm.spot);
           $log.log('All spots: ', spots);
           $location.path(toPath);

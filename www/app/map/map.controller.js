@@ -8,13 +8,12 @@
   MapController.$inject = ['$ionicHistory', '$ionicLoading', '$ionicModal', '$ionicPopover', '$ionicPopup',
     '$ionicSideMenuDelegate', '$location', '$log', '$scope', 'DataModelsFactory', 'FormFactory', 'HelpersFactory',
     'MapFactory', 'MapDrawFactory', 'MapFeaturesFactory', 'MapLayerFactory', 'MapSetupFactory', 'MapViewFactory',
-    'ProjectFactory',
-    'SpotFactory'];
+    'ProjectFactory', 'SpotFactory', 'IS_WEB'];
 
   function MapController($ionicHistory, $ionicLoading, $ionicModal, $ionicPopover, $ionicPopup, $ionicSideMenuDelegate,
                          $location, $log, $scope, DataModelsFactory, FormFactory, HelpersFactory, MapFactory,
                          MapDrawFactory, MapFeaturesFactory, MapLayerFactory, MapSetupFactory, MapViewFactory,
-                         ProjectFactory, SpotFactory) {
+                         ProjectFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     var onlineState;
@@ -61,7 +60,7 @@
       // Disable dragging back to ionic side menu because this affects drawing tools
       $ionicSideMenuDelegate.canDragContent(false);
 
-      if (!vm.currentSpot) HelpersFactory.setBackView($ionicHistory.currentView().url);
+      if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
       createPopover();
       var switcher = new ol.control.LayerSwitcher();
@@ -154,7 +153,8 @@
         vm.popover.remove();            // Remove the popover
       });
 
-      $scope.$on('$ionicView.enter', function () {
+      //$scope.$on('$ionicView.enter', function () {
+      $scope.$on('$stateChangeSuccess', function () {
         $ionicLoading.hide();
         $log.log('Done Loading Map');
       });

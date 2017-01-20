@@ -5,10 +5,10 @@
     .module('app')
     .controller('TagsController', TagsController);
 
-  TagsController.$inject = ['$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope',
+  TagsController.$inject = ['$ionicModal', '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state',
     'HelpersFactory', 'LiveDBFactory', 'ProjectFactory', 'TagFactory'];
 
-  function TagsController($ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, HelpersFactory,
+  function TagsController($ionicModal, $ionicPopover, $ionicPopup, $location, $log, $scope, $state, HelpersFactory,
                           LiveDBFactory, ProjectFactory, TagFactory) {
     var vm = this;
 
@@ -18,6 +18,7 @@
     vm.isTagging = TagFactory.getActiveTagging();
     vm.selectedType = 'all';
     vm.setActiveTagsModal = {};
+    vm.tagIdSelected = undefined;
     vm.tagText = '';
 
     vm.closeModal = closeModal;
@@ -31,6 +32,7 @@
     vm.newTag = newTag;
     vm.toggleActiveTagChecked = toggleActiveTagChecked;
     vm.toggleTagging = toggleTagging;
+    vm.updateTags = updateTags;
 
     activate();
 
@@ -39,6 +41,8 @@
      */
 
     function activate() {
+      if ($state.params && $state.params.tag_id) vm.tagIdSelected = $state.params.tag_id;
+
       if (_.isEmpty(ProjectFactory.getCurrentProject())) $location.path('app/manage-project');
       else {
         loadActiveTagging();
@@ -166,11 +170,13 @@
     }
 
     function goToTag(id) {
+      vm.tagIdSelected = id;
       if (!isDelete) $location.path('/app/tags/' + id);
     }
 
     function newTag() {
       var id = HelpersFactory.getNewId();
+      vm.tagIdSelected = id;
       $location.path('/app/tags/' + id);
     }
 
@@ -191,6 +197,11 @@
         $log.log('Adding spots to tag:', TagFactory.getActiveTags());
         TagFactory.clearActiveTags();
       }
+    }
+
+    function updateTags() {
+      vm.allTags = ProjectFactory.getTags();
+      vm.allTagsToDisplay = TagFactory.filterTagsByType(vm.selectedType, vm.allTags);
     }
   }
 }());

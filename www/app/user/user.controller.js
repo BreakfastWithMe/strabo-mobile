@@ -6,10 +6,10 @@
     .controller('UserController', UserController);
 
   UserController.$inject = ['$cordovaCamera', '$document', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$window',
-    'ImageFactory', 'ProjectFactory', 'OtherMapsFactory', 'SpotFactory', 'UserFactory'];
+    'ImageFactory', 'ProjectFactory', 'OtherMapsFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
   function UserController($cordovaCamera, $document, $ionicLoading, $ionicPopup, $log, $scope, $window, ImageFactory,
-                          ProjectFactory, OtherMapsFactory, SpotFactory, UserFactory) {
+                          ProjectFactory, OtherMapsFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
     var dataOrig;
 
@@ -46,7 +46,7 @@
       vm.data = UserFactory.getUser();
       dataOrig = angular.fromJson(angular.toJson(vm.data));
       $log.log('User data:', vm.data);
-      ionic.on('change', getFile, $document[0].getElementById('file'));
+      if (!IS_WEB) ionic.on('change', getFile, $document[0].getElementById('file'));
     }
 
     function cameraModal() {

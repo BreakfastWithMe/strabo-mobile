@@ -6,12 +6,12 @@
     .controller('ManageProjectController', ManageProjectController);
 
   ManageProjectController.$inject = ['$ionicModal', '$ionicLoading', '$ionicPopup', '$log', '$scope', '$q',
-    'DataModelsFactory', 'FormFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory',
-    'ProjectFactory', 'RemoteServerFactory', 'SpotFactory', 'UserFactory'];
+    'DataModelsFactory', 'FormFactory', 'ImageFactory', 'LiveDBFactory', 'OtherMapsFactory', 'ProjectFactory',
+    'RemoteServerFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
   function ManageProjectController($ionicModal, $ionicLoading, $ionicPopup, $log, $scope, $q, DataModelsFactory,
-                                   FormFactory, HelpersFactory, ImageFactory, LiveDBFactory, OtherMapsFactory,
-                                   ProjectFactory, RemoteServerFactory, SpotFactory, UserFactory) {
+                                   FormFactory, ImageFactory, LiveDBFactory, OtherMapsFactory, ProjectFactory,
+                                   RemoteServerFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     var deleteSelected;
@@ -76,6 +76,11 @@
       ProjectFactory.setUser(user);
 
       vm.survey = DataModelsFactory.getDataModel('project').survey;
+
+      if (IS_WEB && _.isEmpty(vm.project)) {
+        vm.data.project_name = 'Sample';
+        doCreateNewProject();
+      }
 
       $ionicModal.fromTemplateUrl('app/project/open-project-modal.html', {
         'scope': $scope,
@@ -692,7 +697,7 @@
       destroyProject().then(function () {
         ProjectFactory.createNewProject(vm.data).then(function () {
           $log.log('Save Project to LiveDB:', ProjectFactory.getCurrentProject());
-          LiveDBFactory.save(null,ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
+          LiveDBFactory.save(null, ProjectFactory.getCurrentProject(), ProjectFactory.getSpotsDataset());
           $ionicLoading.hide();
           vm.closeModal();
           initializeProject();
@@ -842,7 +847,7 @@
     }
 
     function isWeb() {
-      return HelpersFactory.isWeb();
+      return IS_WEB;
     }
 
     function newDataset() {
@@ -1002,10 +1007,12 @@
       // Toggled On - add dataset to the list of active datasets
       else {
         vm.activeDatasets.push(datasetToggled);
-        if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !_.isEmpty(UserFactory.getUser()) && navigator.onLine) {
+        if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !_.isEmpty(
+            UserFactory.getUser()) && navigator.onLine) {
           initializeDownloadDataset(datasetToggled);
         }
-        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !_.isEmpty(UserFactory.getUser()) && !navigator.onLine) {
+        else if (_.isEmpty(ProjectFactory.getSpotIds()[datasetToggled.id]) && !_.isEmpty(
+            UserFactory.getUser()) && !navigator.onLine) {
           $ionicPopup.alert({
             'title': 'Cannot Update Dataset!',
             'template': 'Unable to reach the server to check if there are already Spots in this dataset to download.'
