@@ -46,6 +46,16 @@
           }
         }
       })
+      .state('app.login', {
+        'cache': false,
+        'url': '/login',
+        'views': {
+          'menuContent': {
+            'templateUrl': 'app/login/login.web.html',
+            'controller': 'LoginController as vm'
+          }
+        }
+      })
       .state('app.manage-project', {
         'cache': false,
         'url': '/manage-project',
