@@ -27,6 +27,7 @@
     vm.isNesting = SpotFactory.getActiveNesting();
     vm.newNestModal = {};
     vm.newNestProperties = {};
+    vm.popover = {};
     vm.saveEditsText = 'Save Edits';
     vm.showSaveEditsBtn = false;
     vm.survey = {};
@@ -62,68 +63,68 @@
       var switcher = new ol.control.LayerSwitcher();
 
       setImageBasemap().then(function () {
-        MapSetupFactory.setImageBasemap(vm.imageBasemap);
         MapViewFactory.setInitialMapView(vm.imageBasemap);
         MapSetupFactory.setMap();
-        MapSetupFactory.setLayers();
-        MapSetupFactory.setMapControls(switcher);
-        MapSetupFactory.setPopupOverlay();
+        MapSetupFactory.setImageBasemapLayers(vm.imageBasemap).then(function () {
+          MapSetupFactory.setMapControls(switcher);
+          MapSetupFactory.setPopupOverlay();
 
-        map = MapSetupFactory.getMap();
-        var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
-        MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
-        MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+          map = MapSetupFactory.getMap();
+          var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map, vm.imageBasemap);
+          MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
+          MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
 
-        $ionicModal.fromTemplateUrl('app/maps/map/add-tag-modal.html', {
-          'scope': $scope,
-          'animation': 'slide-in-up',
-          'backdropClickToClose': false
-        }).then(function (modal) {
-          vm.addTagModal = modal;
-        });
+          $ionicModal.fromTemplateUrl('app/maps/map/add-tag-modal.html', {
+            'scope': $scope,
+            'animation': 'slide-in-up',
+            'backdropClickToClose': false
+          }).then(function (modal) {
+            vm.addTagModal = modal;
+          });
 
-        $ionicModal.fromTemplateUrl('app/shared/new-nest-modal.html', {
-          'scope': $scope,
-          'animation': 'slide-in-up',
-          'backdropClickToClose': false,
-          'hardwareBackButtonClose': false
-        }).then(function (modal) {
-          vm.newNestModal = modal;
-        });
+          $ionicModal.fromTemplateUrl('app/shared/new-nest-modal.html', {
+            'scope': $scope,
+            'animation': 'slide-in-up',
+            'backdropClickToClose': false,
+            'hardwareBackButtonClose': false
+          }).then(function (modal) {
+            vm.newNestModal = modal;
+          });
 
-        // When the map is moved update the zoom control
-        map.on('moveend', function (evt) {
-          vm.currentZoom = evt.map.getView().getZoom();
-        });
+          // When the map is moved update the zoom control
+          map.on('moveend', function (evt) {
+            vm.currentZoom = evt.map.getView().getZoom();
+          });
 
-        map.on('touchstart', function (event) {
-          $log.log('touch');
-          $log.log(event);
-        });
+          map.on('touchstart', function (event) {
+            $log.log('touch');
+            $log.log(event);
+          });
 
-        // display popup on click
-        map.on('click', function (evt) {
-          $log.log('map clicked');
+          // display popup on click
+          map.on('click', function (evt) {
+            $log.log('map clicked');
 
-          // are we in draw mode?  If so we dont want to display any popovers during draw mode
-          if (!MapDrawFactory.isDrawMode()) {
-            MapFeaturesFactory.showPopup(map, evt);
-          }
-        });
-
-        // Add a `change:visible` listener to all layers currently within the map
-        ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
-          l.on('change:visible', function (e) {
-            var lyr = e.target;
-            if (lyr.get('layergroup') === 'Datasets') {
-              _.each(lyr.getLayerStatesArray(), function (layerState) {
-                if (datasetsLayerStates[layerState.layer.get('id')] !== layerState.visible) {
-                  datasetsLayerStates[layerState.layer.get('id')] = layerState.visible;
-                }
-              });
-              MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
-              switcher.renderPanel();
+            // are we in draw mode?  If so we dont want to display any popovers during draw mode
+            if (!MapDrawFactory.isDrawMode()) {
+              MapFeaturesFactory.showPopup(map, evt);
             }
+          });
+
+          // Add a `change:visible` listener to all layers currently within the map
+          ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
+            l.on('change:visible', function (e) {
+              var lyr = e.target;
+              if (lyr.get('layergroup') === 'Datasets') {
+                _.each(lyr.getLayerStatesArray(), function (layerState) {
+                  if (datasetsLayerStates[layerState.layer.get('id')] !== layerState.visible) {
+                    datasetsLayerStates[layerState.layer.get('id')] = layerState.visible;
+                  }
+                });
+                MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
+                switcher.renderPanel();
+              }
+            });
           });
         });
       });

@@ -67,7 +67,6 @@
 
       // Setup the Map
       MapViewFactory.setInitialMapView();
-      MapSetupFactory.setImageBasemap(null);
       MapSetupFactory.setMap();
       MapSetupFactory.setLayers();
       MapSetupFactory.setMapControls(switcher);

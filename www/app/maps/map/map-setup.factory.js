@@ -17,7 +17,7 @@
       'getInitialMapView': getInitialMapView,
       'getMap': getMap,
       'getPopupOverlay': getPopupOverlay,
-      'setImageBasemap': setImageBasemap,
+      'setImageBasemapLayers': setImageBasemapLayers,
       'setLayers': setLayers,
       'setMap': setMap,
       'setMapControls': setMapControls,
@@ -52,49 +52,46 @@
       });
     }
 
-    function setLayers() {
-      if (!imageBasemap) {
-        MapFactory.setMaps();
-        MapLayerFactory.setOnlineLayers();
-        MapLayerFactory.setOfflineLayers();
-        setVisibleLayer(MapLayerFactory.getOnlineLayers());
-        setVisibleLayer(MapLayerFactory.getOfflineLayers());
-
-        map.addLayer(MapLayerFactory.getGeolocationLayer());
+    function setImageBasemapLayers(im) {
+      imageBasemap = im;
+      return ImageFactory.getImageById(imageBasemap.id).then(function (src) {
+        if (!src) src = 'img/image-not-found.png';
+        var extent = [0, 0, imageBasemap.width, imageBasemap.height];
+        var imageBasemapLayer = new ol.layer.Image({
+          'source': new ol.source.ImageStatic({
+            'attributions': [
+              new ol.Attribution({
+                'html': '&copy; <a href="">Need image source here.</a>'
+              })
+            ],
+            'url': src,
+            'projection': new ol.proj.Projection({
+              'code': 'map-image',
+              'units': 'pixels',
+              'extent': extent
+            }),
+            'imageExtent': extent
+          })
+        });
+        map.addLayer(imageBasemapLayer);
         map.addLayer(MapLayerFactory.getDatasetsLayer());
         map.addLayer(MapLayerFactory.getFeatureLayer());
         map.addLayer(MapLayerFactory.getDrawLayer());
-      }
-      else {
-        ImageFactory.getImageById(imageBasemap.id).then(function (src) {
-          if (!src) src = 'img/image-not-found.png';
-          var extent = [0, 0, imageBasemap.width, imageBasemap.height];
-          var imageBasemapLayer = new ol.layer.Image({
-            'source': new ol.source.ImageStatic({
-              'attributions': [
-                new ol.Attribution({
-                  'html': '&copy; <a href="">Need image source here.</a>'
-                })
-              ],
-              'url': src,
-              'projection': new ol.proj.Projection({
-                'code': 'map-image',
-                'units': 'pixels',
-                'extent': extent
-              }),
-              'imageExtent': extent
-            })
-          });
-          map.addLayer(imageBasemapLayer);
-          map.addLayer(MapLayerFactory.getDatasetsLayer());
-          map.addLayer(MapLayerFactory.getFeatureLayer());
-          map.addLayer(MapLayerFactory.getDrawLayer());
-        });
-      }
+      });
     }
 
-    function setImageBasemap(im) {
-      imageBasemap = im;
+    function setLayers() {
+      imageBasemap = undefined;
+      MapFactory.setMaps();
+      MapLayerFactory.setOnlineLayers();
+      MapLayerFactory.setOfflineLayers();
+      setVisibleLayer(MapLayerFactory.getOnlineLayers());
+      setVisibleLayer(MapLayerFactory.getOfflineLayers());
+
+      map.addLayer(MapLayerFactory.getGeolocationLayer());
+      map.addLayer(MapLayerFactory.getDatasetsLayer());
+      map.addLayer(MapLayerFactory.getFeatureLayer());
+      map.addLayer(MapLayerFactory.getDrawLayer());
     }
 
     function setMap() {
@@ -119,9 +116,7 @@
         'imageBasemap': imageBasemap      // null if not using an image basemap
       };
 
-      if (!imageBasemap) {
-        map.addControl(new ol.control.ScaleLine());
-      }
+      if (!imageBasemap) map.addControl(new ol.control.ScaleLine());
 
       ol.inherits(MapDrawFactory.DrawControls, ol.control.Control);
       map.addControl(new MapDrawFactory.DrawControls(drawControlProps));
