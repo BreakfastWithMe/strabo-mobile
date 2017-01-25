@@ -5,11 +5,12 @@
     .module('app')
     .controller('MiscController', MiscController);
 
-  MiscController.$inject = ['$document', '$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope',
-    '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory'];
+  MiscController.$inject = ['$ionicLoading', '$ionicModal', '$ionicPopup', '$log', '$q', '$scope', '$state', '$window',
+    'DataModelsFactory', 'HelpersFactory', 'ProjectFactory', 'RemoteServerFactory', 'SpotFactory',
+    'IS_WEB'];
 
-  function MiscController($document, $ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $window,
-                           DataModelsFactory, HelpersFactory, ProjectFactory, RemoteServerFactory, SpotFactory) {
+  function MiscController($ionicLoading, $ionicModal, $ionicPopup, $log, $q, $scope, $state, $window, DataModelsFactory,
+                          HelpersFactory, ProjectFactory, RemoteServerFactory, SpotFactory, IS_WEB) {
     var vm = this;
 
     vm.closeModal = closeModal;
@@ -140,8 +141,7 @@
 
       vm.json = syntaxHighlight(angular.toJson(vm.spotDataModel, true));
 
-      // If this is a web browser and not using cordova
-      if ($document[0].location.protocol !== 'file:') { // Phonegap is not present
+      if (IS_WEB) {
         var win = $window.open();
         var html = '<head>';
         html += '<style>pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; } .type { color: green; }';

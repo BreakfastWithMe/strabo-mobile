@@ -204,10 +204,7 @@
      */
 
     function addImage() {
-      // If this is a web browser and not using cordova
-      if ($document[0].location.protocol !== 'file:') { // Phonegap is not present }
-        ionic.trigger('click', {'target': $document[0].getElementById('file')});
-      }
+      if (IS_WEB) ionic.trigger('click', {'target': $document[0].getElementById('file')});
       else cameraModal();
     }
 

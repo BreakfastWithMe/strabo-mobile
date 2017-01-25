@@ -20,11 +20,25 @@
     var uploadErrors = false;
     var user = UserFactory.getUser();
 
-    vm.areDatasetsOn = areDatasetsOn;
-    vm.closeModal = closeModal;
     vm.data = {};
     vm.datasets = [];
     vm.activeDatasets = [];
+    vm.isWeb = IS_WEB;
+    vm.newDatasetName = '';
+    vm.otherFeatureTypes = [];
+    vm.project = {};
+    vm.projects = [];
+    vm.showNewProject = false;
+    vm.showNewProjectDetail = false;
+    vm.showExistingProjectsList = false;
+    vm.showExitProjectModal = !_.isEmpty(ProjectFactory.getCurrentProject());
+    vm.showProject = false;
+    vm.showProjectButtons = false;
+    vm.survey = {};
+    vm.titleText = 'Manage Projects';
+
+    vm.areDatasetsOn = areDatasetsOn;
+    vm.closeModal = closeModal;
     vm.deleteDataset = deleteDataset;
     vm.deleteProject = deleteProject;
     vm.deleteType = deleteType;
@@ -36,26 +50,13 @@
     vm.initializeDownload = initializeDownload;
     vm.isDatasetOn = isDatasetOn;
     vm.isSyncReady = isSyncReady;
-    vm.isWeb = isWeb;
     vm.newDataset = newDataset;
-    vm.newDatasetName = '';
     vm.newProject = newProject;
-    vm.otherFeatureTypes = [];
-    vm.project = {};
-    vm.projects = [];
     vm.selectProject = selectProject;
     vm.setSpotsDataset = setSpotsDataset;
     vm.showField = showField;
-    vm.showNewProject = false;
-    vm.showNewProjectDetail = false;
-    vm.showExistingProjectsList = false;
-    vm.showExitProjectModal = !_.isEmpty(ProjectFactory.getCurrentProject());
-    vm.showProject = false;
-    vm.showProjectButtons = false;
-    vm.survey = {};
     vm.switchProject = switchProject;
     vm.syncDataset = syncDataset;
-    vm.titleText = 'Manage Projects';
     vm.toggleDataset = toggleDataset;
     vm.toggleProject = toggleProject;
 
@@ -844,10 +845,6 @@
 
     function isSyncReady() {
       return ProjectFactory.isSyncReady();
-    }
-
-    function isWeb() {
-      return IS_WEB;
     }
 
     function newDataset() {

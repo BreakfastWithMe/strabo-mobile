@@ -6,11 +6,10 @@
     .controller('LoginController', LoginController);
 
   LoginController.$inject = ['$ionicLoading', '$ionicPopup', '$location', '$log', '$scope', '$state', 'ImageFactory',
-    'HelpersFactory', 'OtherMapsFactory', 'ProjectFactory', 'SpotFactory',
-    'UserFactory'];
+    'OtherMapsFactory', 'ProjectFactory', 'SpotFactory', 'UserFactory', 'IS_WEB'];
 
-  function LoginController($ionicLoading, $ionicPopup, $location, $log, $scope, $state, ImageFactory, HelpersFactory,
-                           OtherMapsFactory, ProjectFactory, SpotFactory, UserFactory) {
+  function LoginController($ionicLoading, $ionicPopup, $location, $log, $scope, $state, ImageFactory, OtherMapsFactory,
+                           ProjectFactory, SpotFactory, UserFactory, IS_WEB) {
     var vm = this;
 
     vm.login = null;
@@ -39,7 +38,7 @@
       var GETproject = {};
       GETproject.id = $location.search()['projectid'];
 
-      if(HelpersFactory.isWeb() && GETcredentials && GETproject.id){
+      if(IS_WEB && GETcredentials && GETproject.id){
         $log.log('First, force logout and destroy project');
         UserFactory.clearUser();
         ProjectFactory.destroyProject();

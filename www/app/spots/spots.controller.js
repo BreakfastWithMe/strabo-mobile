@@ -6,8 +6,8 @@
     .controller('SpotsController', Spots);
 
   Spots.$inject = ['$cordovaDevice', '$cordovaFile', '$document', '$ionicHistory', '$ionicLoading', '$ionicModal',
-    '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state', '$window', 'HelpersFactory', 'ProjectFactory',
-    'SpotFactory', 'SpotsFactory', 'UserFactory', 'IS_WEB'];
+    '$ionicPopover', '$ionicPopup', '$location', '$log', '$scope', '$state', '$window', 'HelpersFactory',
+    'ProjectFactory', 'SpotFactory', 'SpotsFactory', 'UserFactory', 'IS_WEB'];
 
   function Spots($cordovaDevice, $cordovaFile, $document, $ionicHistory, $ionicLoading, $ionicModal, $ionicPopover,
                  $ionicPopup, $location, $log, $scope, $state, $window, HelpersFactory, ProjectFactory, SpotFactory,
@@ -289,8 +289,7 @@
 
       var spotData = convertToCSV(vm.spots);
 
-      // If this is a web browser and not using cordova
-      if ($document[0].location.protocol !== 'file:') { // Phonegap is not present }
+      if (IS_WEB) {
         spotData = spotData.replace(/\r\n/g, '<br>');
         var win = $window.open();
         win.document.body.innerHTML = spotData;

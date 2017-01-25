@@ -7,11 +7,11 @@
 
   ImagesTabController.$inject = ['$cordovaCamera', '$cordovaGeolocation', '$document', '$ionicModal', '$ionicPopup',
     '$log', '$q', '$scope', '$state', '$window', 'DataModelsFactory', 'HelpersFactory', 'ImageFactory', 'LiveDBFactory',
-    'ProjectFactory'];
+    'ProjectFactory', 'IS_WEB'];
 
   function ImagesTabController($cordovaCamera, $cordovaGeolocation, $document, $ionicModal, $ionicPopup, $log, $q,
                                $scope, $state, $window, DataModelsFactory, HelpersFactory, ImageFactory, LiveDBFactory,
-                               ProjectFactory) {
+                               ProjectFactory, IS_WEB) {
     var vm = this;
     var vmParent = $scope.vm;
     vmParent.survey = DataModelsFactory.getDataModel('image').survey;
@@ -311,10 +311,7 @@
      */
 
     function addImage() {
-      // If this is a web browser and not using cordova
-      if ($document[0].location.protocol !== 'file:') { // Phonegap is not present }
-        ionic.trigger('click', {'target': $document[0].getElementById('file')});
-      }
+      if (IS_WEB) ionic.trigger('click', {'target': $document[0].getElementById('file')});
       else cameraModal();
     }
 
@@ -346,10 +343,7 @@
 
     function exportImage() {
       ImageFactory.getImageById(vmParent.data.id).then(function (base64Image) {
-        // If this is a web browser and not using cordova
-        if ($document[0].location.protocol !== 'file:') { // Phonegap is not present }
-          $window.open(base64Image, '_blank');
-        }
+        if (IS_WEB) $window.open(base64Image, '_blank');
         else {
           // Process the base64 string - split the base64 string into the data and data type
           var block = base64Image.split(';');
