@@ -139,21 +139,14 @@
         });
       });
 
-      // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function () {
-        vm.addTagModal.remove();
-      });
-
-      // Cleanup when we leave the page (need unloaded, as opposed to leave, so this fires when
-      // opening an item from the options button)
-      $scope.$on('$ionicView.unloaded', function () {
         MapViewFactory.setMapView(map);
         MapLayerFactory.setVisibleLayer(map);
         MapDrawFactory.cancelEdits();    // Cancel any edits
+        vm.addTagModal.remove();
         vm.popover.remove();            // Remove the popover
       });
 
-      //$scope.$on('$ionicView.enter', function () {
       $scope.$on('$stateChangeSuccess', function () {
         $ionicLoading.hide();
         $log.log('Done Loading Map');
