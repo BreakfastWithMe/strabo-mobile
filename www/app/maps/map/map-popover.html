@@ -4,7 +4,7 @@
       <ion-item ng-click='vm.zoomToSpotsExtent()'>
         <i class="icon ion-map"></i> Zoom to Extent of Spots
       </ion-item>
-      <ion-item ng-click='vm.cacheOfflineTiles()'>
+      <ion-item ng-hide='vm.isWeb' ng-click='vm.cacheOfflineTiles()'>
         <i class="icon ion-archive"></i> Save Map for Offline Use
       </ion-item>
       <ion-item ng-click='vm.groupSpots()'>

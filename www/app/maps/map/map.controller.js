@@ -26,6 +26,7 @@
     vm.currentZoom = '';
     vm.data = {};
     vm.isNesting = SpotFactory.getActiveNesting();
+    vm.isWeb = IS_WEB;
     vm.newNestModal = {};
     vm.newNestProperties = {};
     vm.saveEditsText = 'Save Edits';
