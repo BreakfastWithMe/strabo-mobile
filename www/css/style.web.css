@@ -24,6 +24,16 @@ html, body, .container-fluid, .strabo-page-content, .map{
   border: 1px solid lightgray;
 }
 
+.image-basemap-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: white;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid lightgray;
+}
+
 .nesting-notification-web {
   vertical-align: middle;
 }
