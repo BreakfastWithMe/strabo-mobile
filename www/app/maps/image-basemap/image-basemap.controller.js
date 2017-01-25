@@ -74,6 +74,10 @@
           MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map, vm.imageBasemap);
           MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map, vm.imageBasemap);
 
+          $ionicLoading.hide();
+          $log.log('Done Loading Image Basemap');
+          vm.popover.hide();
+
           $ionicModal.fromTemplateUrl('app/maps/map/add-tag-modal.html', {
             'scope': $scope,
             'animation': 'slide-in-up',
@@ -141,12 +145,6 @@
         vm.popover.remove();            // Remove the popover
       });
 
-      //$scope.$on('$ionicView.enter', function () {
-      $scope.$on('$stateChangeSuccess', function () {
-        $ionicLoading.hide();
-        $log.log('Done Loading Image Basemap');
-      });
-
       $scope.$on('enableSaveEdits', function (e, data) {
         vm.showSaveEditsBtn = data;
         vm.saveEditsText = 'Save Edits';
@@ -165,6 +163,7 @@
         'scope': $scope
       }).then(function (popover) {
         vm.popover = popover;
+        vm.popover.show();  // ToDo: Fix. This is a hack to get the image to appear on first load
       });
     }
 
