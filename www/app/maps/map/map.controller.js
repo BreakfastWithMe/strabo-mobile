@@ -63,7 +63,13 @@
 
       if (!vm.currentSpot && !IS_WEB) HelpersFactory.setBackView($ionicHistory.currentView().url);
 
-      createPopover();
+      createModals();
+      createPopover().then(function () {
+        createMap();
+      });
+    }
+
+    function createMap() {
       var switcher = new ol.control.LayerSwitcher();
 
       // Setup the Map
@@ -84,24 +90,17 @@
       var datasetsLayerStates = MapFeaturesFactory.getInitialDatasetLayerStates(map);
       MapFeaturesFactory.createDatasetsLayer(datasetsLayerStates, map);
       MapFeaturesFactory.createFeatureLayer(datasetsLayerStates, map);
+      createSwitcher(switcher, datasetsLayerStates);
 
-      $ionicModal.fromTemplateUrl('app/maps/map/add-tag-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false
-      }).then(function (modal) {
-        vm.addTagModal = modal;
-      });
+      createMapInteractions();
+      createPageEvents();
 
-      $ionicModal.fromTemplateUrl('app/shared/new-nest-modal.html', {
-        'scope': $scope,
-        'animation': 'slide-in-up',
-        'backdropClickToClose': false,
-        'hardwareBackButtonClose': false
-      }).then(function (modal) {
-        vm.newNestModal = modal;
-      });
+      $ionicLoading.hide();
+      $log.log('Done Loading Map');
+      vm.popover.hide();
+    }
 
+    function createMapInteractions() {
       // When the map is moved save the new view and update the zoom control
       map.on('moveend', function (evt) {
         vm.currentZoom = evt.map.getView().getZoom();
@@ -122,7 +121,79 @@
           MapFeaturesFactory.showPopup(map, evt);
         }
       });
+    }
 
+    function createModals() {
+      $ionicModal.fromTemplateUrl('app/maps/map/add-tag-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false
+      }).then(function (modal) {
+        vm.addTagModal = modal;
+      });
+
+      $ionicModal.fromTemplateUrl('app/shared/new-nest-modal.html', {
+        'scope': $scope,
+        'animation': 'slide-in-up',
+        'backdropClickToClose': false,
+        'hardwareBackButtonClose': false
+      }).then(function (modal) {
+        vm.newNestModal = modal;
+      });
+    }
+
+    function createPageEvents() {
+      $scope.$on('$destroy', function () {
+        MapViewFactory.setMapView(map);
+        MapLayerFactory.setVisibleLayer(map);
+        MapDrawFactory.cancelEdits();    // Cancel any edits
+        vm.addTagModal.remove();
+        vm.popover.remove();            // Remove the popover
+      });
+
+      $scope.$on('enableSaveEdits', function (e, data) {
+        vm.showSaveEditsBtn = data;
+        vm.saveEditsText = 'Save Edits';
+        _.defer(function () {
+          $scope.$apply();
+        });
+      });
+
+      $scope.$on('changedDrawMode', function () {
+        var draw = MapDrawFactory.getDrawMode();
+        draw.on('drawend', function (e) {
+          MapDrawFactory.doOnDrawEnd(e);
+          var selectedSpots = SpotFactory.getSelectedSpots();
+          if (!_.isEmpty(selectedSpots)) {
+            $log.log('Selected Spots:', selectedSpots);
+            vm.allTags = ProjectFactory.getTags();
+            tagsToAdd = [];
+            vm.addTagModal.show();
+          }
+        });
+      });
+
+      // Watch whether we have internet access or not
+      $scope.$watch('vm.isOnline()', function (online) {
+        if (onlineState !== online) {
+          onlineState = online;
+          if (online) MapLayerFactory.setOnlineLayersVisible(map);
+          else MapLayerFactory.setOfflineLayersVisible(map);
+        }
+      });
+    }
+
+    function createPopover() {
+      return $ionicPopover.fromTemplateUrl('app/maps/map/map-popover.html', {
+        'scope': $scope
+      }).then(function (popover) {
+        vm.popover = popover;
+        vm.popover.show(); // ToDo: Fix. This is a hack to get the map to not appear stretched on load
+      });
+    }
+
+    // Layer switcher
+    function createSwitcher(switcher, datasetsLayerStates) {
       // Add a `change:visible` listener to all layers currently within the map
       ol.control.LayerSwitcher.forEachRecursive(map, function (l, idx, a) {
         l.on('change:visible', function (e) {
@@ -137,62 +208,6 @@
             switcher.renderPanel();
           }
         });
-      });
-
-      $scope.$on('$destroy', function () {
-        MapViewFactory.setMapView(map);
-        MapLayerFactory.setVisibleLayer(map);
-        MapDrawFactory.cancelEdits();    // Cancel any edits
-        vm.addTagModal.remove();
-        vm.popover.remove();            // Remove the popover
-      });
-
-      $scope.$on('$stateChangeSuccess', function () {
-        $ionicLoading.hide();
-        $log.log('Done Loading Map');
-      });
-
-      $scope.$on('enableSaveEdits', function (e, data) {
-        vm.showSaveEditsBtn = data;
-        vm.saveEditsText = 'Save Edits';
-        _.defer(function () {
-          $scope.$apply();
-        });
-      });
-
-      $scope.$on('changedDrawMode', function () {
-        setMapDrawInteraction();
-      });
-
-      // Watch whether we have internet access or not
-      $scope.$watch('vm.isOnline()', function (online) {
-        if (onlineState !== online) {
-          onlineState = online;
-          if (online) MapLayerFactory.setOnlineLayersVisible(map);
-          else MapLayerFactory.setOfflineLayersVisible(map);
-        }
-      });
-    }
-
-    function createPopover() {
-      $ionicPopover.fromTemplateUrl('app/maps/map/map-popover.html', {
-        'scope': $scope
-      }).then(function (popover) {
-        vm.popover = popover;
-      });
-    }
-
-    function setMapDrawInteraction() {
-      var draw = MapDrawFactory.getDrawMode();
-      draw.on('drawend', function (e) {
-        MapDrawFactory.doOnDrawEnd(e);
-        var selectedSpots = SpotFactory.getSelectedSpots();
-        if (!_.isEmpty(selectedSpots)) {
-          $log.log('Selected Spots:', selectedSpots);
-          vm.allTags = ProjectFactory.getTags();
-          tagsToAdd = [];
-          vm.addTagModal.show();
-        }
       });
     }
 
@@ -304,7 +319,7 @@
         var activeNest = SpotFactory.getActiveNest();
         SpotFactory.clearActiveNest();
         vm.newNestProperties = {};
-        if(_.isEmpty(activeNest)) {
+        if (_.isEmpty(activeNest)) {
           $ionicPopup.alert({
             'title': 'Empty Nest!',
             'template': 'No Spots were added to the Nest.'

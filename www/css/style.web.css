@@ -1,4 +1,4 @@
-html, body, .container-fluid, .strabo-page-content, .map{
+html, body, .container-fluid, .strabo-page-content {
   height: 100%;
 }
 
@@ -7,9 +7,7 @@ html, body, .container-fluid, .strabo-page-content, .map{
 }
 
 #mapdiv {
-  height:100%;
-  width:100%;
-  position:fixed;
+  height: 100%;
   border-top: 0 solid #fff;
   border-bottom: 50px solid #fff;
 }
