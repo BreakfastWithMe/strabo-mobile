@@ -73,6 +73,10 @@ html, body, .container-fluid, .strabo-page-content {
   background-color: #F6F6F6;
 }
 
+.modal-backdrop {
+  background-color: transparent;
+}
+
 /*--------------------
 GoldenLayout Dashboard
 ---------------------*/
