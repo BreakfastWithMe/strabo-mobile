@@ -124,8 +124,18 @@
       imageSources = [];
       _.each(vmParent.spot.properties.images, function (image) {
         var promise = ImageFactory.getImageById(image.id).then(function (src) {
-          if (src) imageSources[image.id] = src;
-          else imageSources[image.id] = 'img/image-not-found.png';
+
+          if(IS_WEB){
+            $log.log('Image ID:', image.id);
+            imageSources[image.id] = "https://strabospot.org/pi/" + image.id;
+          }else if (src) {
+            imageSources[image.id] = src;
+
+
+
+          }else{
+            imageSources[image.id] = 'img/image-not-found.png';
+          }
         });
         promises.push(promise);
       });

@@ -196,10 +196,15 @@
           if (image.id.toString() === $state.params.imagebasemapId) vm.imageBasemap = image;
         });
       });
-      if (vm.imageBasemap.height && vm.imageBasemap.width) return $q.when(null);
-      else {
+      if (vm.imageBasemap.height && vm.imageBasemap.width) {
+        return $q.when(null);
+      }else {
         return ImageFactory.getImageById(vm.imageBasemap.id).then(function (src) {
-          if (!src) src = 'img/image-not-found.png';
+          if(IS_WEB){
+            src = 'https://strabospot.org/pi/' + vm.imageBasemap.id;
+          }else if (!src) {
+            src = 'img/image-not-found.png';
+          }
           var im = new Image();
           im.src = src;
           vm.imageBasemap.height = im.height;
